@@ -68,9 +68,10 @@ export default function RegisterPage() {
 
         setLoading(true);
         try {
+            // Backend expects lowercase keys: firstname, lastname
             await authService.register({
-                firstName: formData.firstName.trim(),
-                lastName: formData.lastName.trim(),
+                firstname: formData.firstName.trim(),
+                lastname: formData.lastName.trim(),
                 email: formData.email.trim(),
                 password: formData.password,
             });
@@ -80,7 +81,10 @@ export default function RegisterPage() {
                 router.push('/login');
             }, 1500);
         } catch (err) {
-            const msg = err.response?.data?.message || err.message || 'Registration failed. Try again.';
+            const msg =
+                err.response?.data?.message ||
+                err.message ||
+                'Registration failed. Try again.';
             setServerError(msg);
         } finally {
             setLoading(false);
@@ -96,8 +100,12 @@ export default function RegisterPage() {
                         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                             <UserPlus className="h-6 w-6" />
                         </div>
-                        <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900">Create an account</h2>
-                        <p className="mt-1 text-sm text-gray-500">Join BlogSpace to publish and discover blogs</p>
+                        <h2 className="mt-4 text-2xl font-bold tracking-tight text-gray-900">
+                            Create an account
+                        </h2>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Join BlogSpace to publish and discover blogs
+                        </p>
                     </div>
 
                     {serverError && (
@@ -117,7 +125,9 @@ export default function RegisterPage() {
                     <form onSubmit={handleSubmit} className="mt-6 space-y-4">
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <label className="block text-xs font-semibold text-gray-700">First Name</label>
+                                <label className="block text-xs font-semibold text-gray-700">
+                                    First Name
+                                </label>
                                 <input
                                     type="text"
                                     name="firstName"
@@ -126,11 +136,15 @@ export default function RegisterPage() {
                                     className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     placeholder="John"
                                 />
-                                {errors.firstName && <p className="mt-1 text-xs text-red-600">{errors.firstName}</p>}
+                                {errors.firstName && (
+                                    <p className="mt-1 text-xs text-red-600">{errors.firstName}</p>
+                                )}
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold text-gray-700">Last Name</label>
+                                <label className="block text-xs font-semibold text-gray-700">
+                                    Last Name
+                                </label>
                                 <input
                                     type="text"
                                     name="lastName"
@@ -139,12 +153,16 @@ export default function RegisterPage() {
                                     className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     placeholder="Doe"
                                 />
-                                {errors.lastName && <p className="mt-1 text-xs text-red-600">{errors.lastName}</p>}
+                                {errors.lastName && (
+                                    <p className="mt-1 text-xs text-red-600">{errors.lastName}</p>
+                                )}
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700">Email Address</label>
+                            <label className="block text-xs font-semibold text-gray-700">
+                                Email Address
+                            </label>
                             <input
                                 type="email"
                                 name="email"
@@ -153,11 +171,15 @@ export default function RegisterPage() {
                                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 placeholder="john@example.com"
                             />
-                            {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
+                            {errors.email && (
+                                <p className="mt-1 text-xs text-red-600">{errors.email}</p>
+                            )}
                         </div>
 
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700">Password</label>
+                            <label className="block text-xs font-semibold text-gray-700">
+                                Password
+                            </label>
                             <input
                                 type="password"
                                 name="password"
@@ -166,11 +188,15 @@ export default function RegisterPage() {
                                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 placeholder="••••••••"
                             />
-                            {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password}</p>}
+                            {errors.password && (
+                                <p className="mt-1 text-xs text-red-600">{errors.password}</p>
+                            )}
                         </div>
 
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700">Confirm Password</label>
+                            <label className="block text-xs font-semibold text-gray-700">
+                                Confirm Password
+                            </label>
                             <input
                                 type="password"
                                 name="confirmPassword"
@@ -179,7 +205,11 @@ export default function RegisterPage() {
                                 className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 placeholder="••••••••"
                             />
-                            {errors.confirmPassword && <p className="mt-1 text-xs text-red-600">{errors.confirmPassword}</p>}
+                            {errors.confirmPassword && (
+                                <p className="mt-1 text-xs text-red-600">
+                                    {errors.confirmPassword}
+                                </p>
+                            )}
                         </div>
 
                         <button
@@ -194,7 +224,10 @@ export default function RegisterPage() {
 
                     <p className="mt-6 text-center text-xs text-gray-600">
                         Already have an account?{' '}
-                        <Link href="/login" className="font-semibold text-blue-600 hover:underline">
+                        <Link
+                            href="/login"
+                            className="font-semibold text-blue-600 hover:underline"
+                        >
                             Log in
                         </Link>
                     </p>
