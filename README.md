@@ -13,7 +13,6 @@
 [![JWT](https://img.shields.io/badge/Auth-JWT-black?style=for-the-badge&logo=jsonwebtokens)](https://jwt.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](#license)
 
-![BlogSpace Banner](public/screenshots/banner-placeholder.png)
 
 </div>
 
@@ -244,7 +243,7 @@ npm run dev
 
 Full screenshot gallery — covering the guest journey, authentication flows, the authenticated dashboard, and admin controls — is available here:
 
-**📁 [View Screenshots — Google Drive Folder](PASTE_YOUR_GOOGLE_DRIVE_LINK_HERE)**
+**📁 [View Screenshots — Google Drive Folder](https://drive.google.com/drive/folders/1BkX0J3nq-N68yf_xIbP54bMBobWONxCe?usp=sharing)**
 
 ---
 
