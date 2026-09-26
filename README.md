@@ -13,7 +13,6 @@
 [![JWT](https://img.shields.io/badge/Auth-JWT-black?style=for-the-badge&logo=jsonwebtokens)](https://jwt.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](#license)
 
-![BlogSpace Banner](public/screenshots/banner-placeholder.png)
 
 </div>
 
