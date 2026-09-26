@@ -11,7 +11,7 @@ export default function Footer() {
                         <span>BlogSpace</span>
                     </div>
                     <p className="text-xs text-gray-500">
-                        © {new Date().getFullYear()} BlogSpace Platform. Built with Next.js & REST API.
+                        © {new Date().getFullYear()} BlogSpace Platform. All rights reserved by Ebnul Ahsan.
                     </p>
                     <div className="flex gap-4 text-xs text-gray-500">
                         <Link href="/" className="hover:text-blue-600 transition">

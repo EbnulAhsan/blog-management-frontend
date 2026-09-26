@@ -16,7 +16,12 @@ import {
 
 export default function Sidebar({ isOpen, onClose }) {
     const pathname = usePathname();
-    const { isAdmin, logout } = useAuth();
+    const { user, isAdmin: contextIsAdmin, logout } = useAuth();
+
+    // Role check fallback: context theke ba direct user.role theke
+    const isUserAdmin =
+        Boolean(contextIsAdmin) ||
+        user?.role?.toLowerCase() === 'admin';
 
     const userNavItems = [
         { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -35,7 +40,13 @@ export default function Sidebar({ isOpen, onClose }) {
         { label: 'Change Password', href: '/dashboard/change-password', icon: KeyRound },
     ];
 
-    const navItems = isAdmin ? adminNavItems : userNavItems;
+    const navItems = isUserAdmin ? adminNavItems : userNavItems;
+
+    const handleLinkClick = () => {
+        if (onClose) {
+            onClose();
+        }
+    };
 
     return (
         <>
@@ -43,18 +54,20 @@ export default function Sidebar({ isOpen, onClose }) {
             {isOpen && (
                 <div
                     onClick={onClose}
-                    className="fixed inset-0 z-40 bg-black/50 md:hidden backdrop-blur-xs transition-opacity"
+                    className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity md:hidden"
                 />
             )}
 
             {/* Sidebar Container */}
             <aside
-                className={`fixed top-16 bottom-0 left-0 z-40 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-200 ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+                className={`fixed bottom-0 left-0 top-16 z-40 flex w-64 flex-col border-r border-gray-200 bg-white transition-transform duration-200 ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
                     }`}
             >
                 {/* Mobile Header with close button */}
-                <div className="flex items-center justify-between px-4 py-3 md:hidden border-b border-gray-100">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">Navigation</span>
+                <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 md:hidden">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                        Navigation
+                    </span>
                     <button
                         type="button"
                         onClick={onClose}
@@ -70,18 +83,20 @@ export default function Sidebar({ isOpen, onClose }) {
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = pathname === item.href;
+
                             return (
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    onClick={onClose}
-                                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${isActive
-                                        ? 'bg-blue-50 text-blue-700 font-semibold'
+                                    onClick={handleLinkClick}
+                                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${isActive
+                                        ? 'bg-blue-50 font-semibold text-blue-700'
                                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                                         }`}
                                 >
                                     <Icon
-                                        className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'}`}
+                                        className={`h-5 w-5 ${isActive ? 'text-blue-600' : 'text-gray-400'
+                                            }`}
                                     />
                                     <span>{item.label}</span>
                                 </Link>
@@ -94,8 +109,11 @@ export default function Sidebar({ isOpen, onClose }) {
                 <div className="border-t border-gray-200 p-3">
                     <button
                         type="button"
-                        onClick={logout}
-                        className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                        onClick={() => {
+                            handleLinkClick();
+                            logout();
+                        }}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
                     >
                         <LogOut className="h-5 w-5 text-red-500" />
                         <span>Logout</span>

@@ -73,15 +73,18 @@ export default function CreateBlogPage() {
 
         setLoading(true);
         try {
-            // Rule: Frontend must NOT send userId!
+            // Backend expects blogTitle, blog, category (Requirement Section 16)
             const payload = {
+                blogTitle: formData.title.trim(),
                 title: formData.title.trim(),
-                category: formData.category,
+                blog: formData.content.trim(),
                 content: formData.content.trim(),
+                category: formData.category,
             };
 
             if (formData.image.trim()) {
                 payload.image = formData.image.trim();
+                payload.thumbnail = formData.image.trim();
             }
 
             await blogService.createBlog(payload);
@@ -103,7 +106,7 @@ export default function CreateBlogPage() {
                 <div>
                     <Link
                         href="/dashboard/blogs"
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-blue-600 mb-2 transition"
+                        className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 transition hover:text-blue-600"
                     >
                         <ArrowLeft className="h-4 w-4" />
                         <span>Back to Blogs</span>
@@ -129,7 +132,7 @@ export default function CreateBlogPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    <label className="mb-1 block text-sm font-semibold text-gray-700">
                         Blog Title <span className="text-red-500">*</span>
                     </label>
                     <input
@@ -143,16 +146,16 @@ export default function CreateBlogPage() {
                     {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title}</p>}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Category <span className="text-red-500">*</span>
                         </label>
                         <select
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm bg-white focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                         >
                             {CATEGORIES.map((cat) => (
                                 <option key={cat} value={cat}>
@@ -164,7 +167,7 @@ export default function CreateBlogPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Cover Image URL (Optional)
                         </label>
                         <input
@@ -179,7 +182,7 @@ export default function CreateBlogPage() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    <label className="mb-1 block text-sm font-semibold text-gray-700">
                         Article Content <span className="text-red-500">*</span>
                     </label>
                     <textarea
@@ -188,7 +191,7 @@ export default function CreateBlogPage() {
                         value={formData.content}
                         onChange={handleChange}
                         placeholder="Write the complete story here..."
-                        className="w-full rounded-xl border border-gray-300 p-4 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 leading-relaxed"
+                        className="w-full rounded-xl border border-gray-300 p-4 text-sm leading-relaxed focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                     />
                     {errors.content && <p className="mt-1 text-xs text-red-600">{errors.content}</p>}
                 </div>
@@ -196,14 +199,14 @@ export default function CreateBlogPage() {
                 <div className="flex justify-end gap-3 pt-2">
                     <Link
                         href="/dashboard/blogs"
-                        className="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                        className="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
                     >
                         Cancel
                     </Link>
                     <button
                         type="submit"
                         disabled={loading}
-                        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition disabled:opacity-60"
+                        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-60"
                     >
                         <PenTool className="h-4 w-4" />
                         <span>{loading ? 'Publishing...' : 'Publish Blog'}</span>
