@@ -169,8 +169,7 @@ export default function DashboardBlogsPage() {
                                 {/* Actions Footer */}
                                 <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
                                     <Link
-                                        href={`/blogs/${id}`}
-                                        target="_blank"
+                                        href={`/blogs/${blog.id || blog._id}`}
                                         className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-700"
                                     >
                                         <span>View Public</span>

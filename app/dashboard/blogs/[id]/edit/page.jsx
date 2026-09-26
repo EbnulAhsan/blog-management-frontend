@@ -5,260 +5,211 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { blogService } from '@/services/blog.service';
 import Loader from '@/components/Loader';
-import { Save, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 
 const CATEGORIES = [
+    'Testing',
+    'Automation',
+    'Programming',
+    'DevOps',
+    'AI',
     'Technology',
-    'Development',
-    'Design',
     'Career',
-    'Lifestyle',
     'Tutorial',
-    'Other',
 ];
 
 export default function EditBlogPage({ params }) {
     const router = useRouter();
     const resolvedParams = use(params);
-    const blogId = resolvedParams.id;
+    const id = resolvedParams.id;
 
     const [formData, setFormData] = useState({
-        title: '',
-        category: 'Technology',
-        content: '',
-        image: '',
+        blogTitle: '',
+        category: '',
+        blog: '',
     });
 
-    const [initialLoading, setInitialLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [serverError, setServerError] = useState('');
-    const [successMsg, setSuccessMsg] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        const fetchBlogDetails = async () => {
+        const fetchBlogData = async () => {
             try {
-                const data = await blogService.getBlogById(blogId);
-                const blog = data.blog || data.data || data;
+                setLoading(true);
+                setError('');
+                const res = await blogService.getBlogById(id);
+                const data = res?.blog || res?.data || res;
+
+                if (!data || Object.keys(data).length === 0) {
+                    setError('Blog post not found.');
+                    return;
+                }
 
                 setFormData({
-                    title: blog.title || blog.blogTitle || '',
-                    category: blog.category || 'Technology',
-                    content: blog.content || blog.blog || '',
-                    image: blog.image || blog.thumbnail || '',
+                    blogTitle: data.blogTitle || data.title || '',
+                    category: data.category || '',
+                    blog: data.blog || data.content || '',
                 });
             } catch (err) {
-                setServerError(
-                    err.response?.data?.message || 'Failed to load existing blog details.'
-                );
+                setError(err.response?.data?.message || 'Failed to load blog data.');
             } finally {
-                setInitialLoading(false);
+                setLoading(false);
             }
         };
 
-        if (blogId) {
-            fetchBlogDetails();
+        if (id) {
+            fetchBlogData();
         }
-    }, [blogId]);
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors((prev) => ({ ...prev, [name]: '' }));
-        }
-    };
-
-    const validate = () => {
-        const errs = {};
-        if (!formData.title.trim()) {
-            errs.title = 'Title is required';
-        } else if (formData.title.trim().length < 5) {
-            errs.title = 'Title must be at least 5 characters long';
-        }
-
-        if (!formData.category) {
-            errs.category = 'Please select a category';
-        }
-
-        if (!formData.content.trim()) {
-            errs.content = 'Content is required';
-        } else if (formData.content.trim().length < 20) {
-            errs.content = 'Content must be at least 20 characters long';
-        }
-
-        return errs;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setServerError('');
-        setSuccessMsg('');
 
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
+        if (!formData.blogTitle.trim() || !formData.category || !formData.blog.trim()) {
+            setError('All fields are required.');
             return;
         }
 
-        setSubmitting(true);
         try {
-            const payload = {
-                title: formData.title.trim(),
-                blogTitle: formData.title.trim(),
+            setSubmitting(true);
+            setError('');
+            setSuccess('');
+
+            await blogService.updateBlog(id, {
+                blogTitle: formData.blogTitle.trim(),
+                blog: formData.blog.trim(),
                 category: formData.category,
-                content: formData.content.trim(),
-                blog: formData.content.trim(),
-            };
+            });
 
-            if (formData.image.trim()) {
-                payload.image = formData.image.trim();
-            }
-
-            await blogService.updateBlog(blogId, payload);
-            setSuccessMsg('Blog updated successfully! Redirecting...');
+            setSuccess('Blog updated successfully! Redirecting...');
             setTimeout(() => {
                 router.push('/dashboard/blogs');
-            }, 1500);
+            }, 1200);
         } catch (err) {
-            setServerError(
-                err.response?.data?.message || 'You are not authorized or update failed.'
-            );
+            setError(err.response?.data?.message || 'Failed to update blog.');
         } finally {
             setSubmitting(false);
         }
     };
 
-    if (initialLoading) {
-        return <Loader text="Loading blog for editing..." />;
+    if (loading) {
+        return <Loader text="Loading blog editor..." />;
     }
 
     return (
-        <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-4">
-                <div>
-                    <Link
-                        href="/dashboard/blogs"
-                        className="mb-2 inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 transition hover:text-blue-600"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        <span>Back to Blogs</span>
-                    </Link>
-                    <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-                        Edit Blog
-                    </h1>
-                    <p className="text-sm text-gray-500">
-                        Update your post details and keep your readers updated
-                    </p>
-                </div>
+        <div className="mx-auto max-w-4xl space-y-6">
+            <div>
+                <Link
+                    href="/dashboard/blogs"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 transition hover:text-blue-600"
+                >
+                    <ArrowLeft className="h-4 w-4" />
+                    <span>Back to My Blogs</span>
+                </Link>
             </div>
 
-            {serverError && (
-                <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                    <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
-                    <span>{serverError}</span>
-                </div>
-            )}
-
-            {successMsg && (
-                <div className="flex items-center gap-2 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-700">
-                    <CheckCircle2 className="h-5 w-5 shrink-0 text-green-600" />
-                    <span>{successMsg}</span>
-                </div>
-            )}
-
-            <form
-                onSubmit={handleSubmit}
-                className="space-y-6 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm"
-            >
-                <div>
-                    <label className="mb-1 block text-sm font-semibold text-gray-700">
-                        Blog Title <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        placeholder="Edit title..."
-                        className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                    {errors.title && (
-                        <p className="mt-1 text-xs text-red-600">{errors.title}</p>
-                    )}
+            <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
+                <div className="mb-8 border-b border-gray-100 pb-6">
+                    <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                        Edit Blog Post
+                    </h1>
+                    <p className="mt-1 text-xs text-gray-500 sm:text-sm">
+                        Modify the title, category, or body of your article.
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                {error && (
+                    <div className="mb-6 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        <AlertCircle className="h-5 w-5 shrink-0 text-red-600" />
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                {success && (
+                    <div className="mb-6 flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+                        <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
+                        <span>{success}</span>
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                        <label className="mb-1 block text-sm font-semibold text-gray-700">
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700">
+                            Blog Title <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            name="blogTitle"
+                            value={formData.blogTitle}
+                            onChange={handleChange}
+                            placeholder="Enter blog title"
+                            required
+                            className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-800 placeholder-gray-400 transition focus:border-blue-500 focus:bg-white focus:outline-none"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700">
                             Category <span className="text-red-500">*</span>
                         </label>
                         <select
                             name="category"
                             value={formData.category}
                             onChange={handleChange}
-                            className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            required
+                            className="w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 py-3 text-sm text-gray-800 transition focus:border-blue-500 focus:bg-white focus:outline-none"
                         >
+                            <option value="" disabled>
+                                Select category...
+                            </option>
                             {CATEGORIES.map((cat) => (
                                 <option key={cat} value={cat}>
                                     {cat}
                                 </option>
                             ))}
                         </select>
-                        {errors.category && (
-                            <p className="mt-1 text-xs text-red-600">{errors.category}</p>
-                        )}
                     </div>
 
                     <div>
-                        <label className="mb-1 block text-sm font-semibold text-gray-700">
-                            Cover Image URL (Optional)
+                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-700">
+                            Blog Content <span className="text-red-500">*</span>
                         </label>
-                        <input
-                            type="url"
-                            name="image"
-                            value={formData.image}
+                        <textarea
+                            name="blog"
+                            rows={12}
+                            value={formData.blog}
                             onChange={handleChange}
-                            placeholder="https://example.com/cover.jpg"
-                            className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="Write your article content here..."
+                            required
+                            className="w-full resize-y rounded-xl border border-gray-200 bg-gray-50/50 p-4 text-sm text-gray-800 placeholder-gray-400 transition focus:border-blue-500 focus:bg-white focus:outline-none"
                         />
                     </div>
-                </div>
 
-                <div>
-                    <label className="mb-1 block text-sm font-semibold text-gray-700">
-                        Article Content <span className="text-red-500">*</span>
-                    </label>
-                    <textarea
-                        name="content"
-                        rows={10}
-                        value={formData.content}
-                        onChange={handleChange}
-                        placeholder="Edit blog content..."
-                        className="w-full rounded-xl border border-gray-300 p-4 text-sm leading-relaxed focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    />
-                    {errors.content && (
-                        <p className="mt-1 text-xs text-red-600">{errors.content}</p>
-                    )}
-                </div>
-
-                <div className="flex justify-end gap-3 pt-2">
-                    <Link
-                        href="/dashboard/blogs"
-                        className="rounded-xl border border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                    >
-                        Cancel
-                    </Link>
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-60"
-                    >
-                        <Save className="h-4 w-4" />
-                        <span>{submitting ? 'Saving changes...' : 'Save Changes'}</span>
-                    </button>
-                </div>
-            </form>
+                    <div className="flex items-center justify-end gap-3 border-t border-gray-100 pt-4">
+                        <Link
+                            href="/dashboard/blogs"
+                            className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-600 transition hover:bg-gray-50"
+                        >
+                            Cancel
+                        </Link>
+                        <button
+                            type="submit"
+                            disabled={submitting}
+                            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            <Save className="h-4 w-4" />
+                            <span>{submitting ? 'Updating...' : 'Update Blog'}</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }
