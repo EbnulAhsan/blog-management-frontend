@@ -13,6 +13,7 @@
 [![JWT](https://img.shields.io/badge/Auth-JWT-black?style=for-the-badge&logo=jsonwebtokens)](https://jwt.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](#license)
 
+![BlogSpace Banner](public/screenshots/banner-placeholder.png)
 
 </div>
 
@@ -241,31 +242,9 @@ npm run dev
 
 ## 11. Application Visual Walkthrough (Screenshots)
 
-> Place captured screenshots inside `/public/screenshots/` in the Next.js project, matching the file names referenced below.
+Full screenshot gallery — covering the guest journey, authentication flows, the authenticated dashboard, and admin controls — is available here:
 
-### 11.1 Public Guest Journey
-| Guest Homepage | Real-time Search & Filter | Article Details View |
-|---|---|---|
-| ![Homepage](public/screenshots/homepage.png) | ![Search](public/screenshots/search-filter.png) | ![Article](public/screenshots/article-view.png) |
-
-### 11.2 Authentication & Security
-| Login Screen | Registration Form | Password Recovery |
-|---|---|---|
-| ![Login](public/screenshots/login.png) | ![Register](public/screenshots/register.png) | ![Recovery](public/screenshots/password-recovery.png) |
-
-### 11.3 Authenticated User Dashboard
-| Dashboard Overview | My Blogs Table | Publishing Form |
-|---|---|---|
-| ![Dashboard](public/screenshots/dashboard.png) | ![My Blogs](public/screenshots/my-blogs.png) | ![Publish](public/screenshots/publish-form.png) |
-
-| Delete Confirmation | Profile & Avatar Upload | Change Password |
-|---|---|---|
-| ![Delete](public/screenshots/delete-confirm.png) | ![Profile](public/screenshots/profile.png) | ![Change Password](public/screenshots/change-password.png) |
-
-### 11.4 Admin Control & Route Guards
-| User Directory & Status Control | Route Access Denied Guard |
-|---|---|
-| ![Admin Users](public/screenshots/admin-users.png) | ![Access Denied](public/screenshots/access-denied.png) |
+**📁 [View Screenshots — Google Drive Folder](PASTE_YOUR_GOOGLE_DRIVE_LINK_HERE)**
 
 ---
 
@@ -275,6 +254,6 @@ Distributed under the **MIT License**.
 
 <div align="center">
 
-Made with ❤️ using Next.js & Express.js by Ebnul Ahsan
+Made with ❤️ using Next.js & Express.js
 
 </div>
