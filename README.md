@@ -245,6 +245,8 @@ Full screenshot gallery — covering the guest journey, authentication flows, th
 
 **📁 [View Screenshots — Google Drive Folder](https://drive.google.com/drive/folders/1BkX0J3nq-N68yf_xIbP54bMBobWONxCe?usp=sharing)**
 
+**📁 [View postman documentation ](https://documenter.getpostman.com/view/49738123/2sBYB4KRfw)**
+
 ---
 
 ## License
